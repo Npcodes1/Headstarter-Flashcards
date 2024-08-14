@@ -1,3 +1,17 @@
+# This is Project 4 of the Headstarter AI Fellowship.
+
+## Goal
+    - The goal is to create a set of flashcards using AI and Strip.
+
+## Tech Used
+    - Next.js
+    - React
+    - Material UI
+    - Firebase
+    - AI
+    - Stripe
+---
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
