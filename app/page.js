@@ -68,7 +68,7 @@ export default function Home() {
         >
           Get Started
         </Button>
-        <Button
+        {/* <Button
           variant="outlined"
           color="primary"
           sx={{
@@ -76,7 +76,7 @@ export default function Home() {
           }}
         >
           Learn More
-        </Button>
+        </Button> */}
 
         <Divider sx={{ my: 2, p: 4 }} />
       </Box>

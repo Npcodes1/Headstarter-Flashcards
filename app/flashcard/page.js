@@ -50,14 +50,10 @@ export default function Flashcard() {
                   >
                     <div>
                       <div>
-                        <Typography variant="h5" component="div">
-                          {flashcard.front}
-                        </Typography>
+                        <Typography variant="h5">{flashcard.front}</Typography>
                       </div>
                       <div>
-                        <Typography variant="h5" component="div">
-                          {flashcard.back}
-                        </Typography>
+                        <Typography variant="h5">{flashcard.back}</Typography>
                       </div>
                     </div>
                   </Box>

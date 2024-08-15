@@ -13,8 +13,6 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-// import Dialog from "@mui/material/Dialog";
-// import DialogTitle from "@mui/material/DialogTitle";
 
 export default function Generate() {
   const [text, setText] = useState("");
@@ -27,6 +25,35 @@ export default function Generate() {
   //functions to open/close dialog
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => setDialogOpen(false);
+
+  const handleSubmit = async () => {
+    //check if the input text is empty. If it is, alert that it is.
+    if (!text.trim()) {
+      alert("Please enter some text to generate flashcards.");
+      return;
+    }
+
+    try {
+      //send a POST request to our api/generate route with the input text
+      const response = await fetch("api/generate", {
+        method: "POST",
+        body: text,
+      });
+
+      //if response not successful => show error
+      if (!response.ok) {
+        throw new Error("Failed to generate flashcards");
+      }
+      //if response successful => update flashcards with the generated data.
+      const data = await response.json();
+      setFlashcards(data);
+
+      //if error, log error and alert user.
+    } catch (error) {
+      console.error("Error generating flashcards:", error);
+      alert("An error occurred while generating flashcards. Please try again.");
+    }
+  };
 
   //add function to save flashcards to Firebase
   const saveFlashcards = async () => {
@@ -66,39 +93,10 @@ export default function Generate() {
     }
   };
 
-  const handleSubmit = async () => {
-    //check if the input text is empty. If it is, alert that it is.
-    if (!text.trim()) {
-      alert("Please enter some text to generate flashcards.");
-      return;
-    }
-
-    try {
-      //send a POST request to our api/gnereate route with the input text
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        body: text,
-      });
-
-      //if response not successful => show error
-      if (!response.ok) {
-        throw new Error("Failed to generate flashcards");
-      }
-      //if response sucessful => update flashcards with the generated data.
-      const data = await response.json();
-      setFlashcards(data);
-
-      //if error, log error and alert user.
-    } catch (error) {
-      console.error("Error generating flashcards:", error);
-      alert("An error occurred while generating flashcards. Please try again.");
-    }
-  };
-
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography variant="h4" gutterBottom>
           Generate Flashcards
         </Typography>
         <TextField
@@ -123,7 +121,7 @@ export default function Generate() {
 
       {flashcards.length > 0 && (
         <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" component="h2" gutterBottom>
+          <Typography variant="h5" gutterBottom>
             Generated Flashcards
           </Typography>
           <Grid container spacing={2}>
