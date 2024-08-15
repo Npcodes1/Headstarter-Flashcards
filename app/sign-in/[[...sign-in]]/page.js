@@ -18,10 +18,23 @@ export default function SignInPage() {
       <AppBar position="static" sx={{ backgroundColor: "#3f51b5" }}>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Flashcard SaaS
+            Bits & Bytes
           </Typography>
           <Button color="inherit">
-            <Link href="/sign-up" passHref>
+            <Link
+              href="/"
+              passHref
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              HOME
+            </Link>
+          </Button>
+          <Button color="inherit">
+            <Link
+              href="/sign-up"
+              passHref
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
               Sign Up
             </Link>
           </Button>
