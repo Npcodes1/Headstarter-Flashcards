@@ -98,8 +98,7 @@ export default function Home() {
           Welcome to Bits & Bytes
         </Typography>
         <Typography variant="h5" gutterBottom>
-          Your Ultimate Tool for Tech Flashcards: Bits of Knowledge, Bytes of
-          Success
+          Your Ultimate Tool For Turning Bits of Knowledge into Bytes of Success
         </Typography>
         <Button
           variant="contained"
@@ -136,8 +135,8 @@ export default function Home() {
               Easy to Use
             </Typography>
             <Typography>
-              Do you feel like there are so much tech to learn? Add your
-              tech-related text and we do the rest!
+              Do you feel like there are so much to learn? Add your text and we
+              do the rest!
             </Typography>
           </Grid>
 
@@ -147,8 +146,8 @@ export default function Home() {
               Accessible
             </Typography>
             <Typography>
-              Access your tech flashcards from anywhere! Make learning on the go
-              easy and efficient.
+              Access your flashcards from anywhere! Make learning on the go easy
+              and efficient.
             </Typography>
           </Grid>
           {/* Organized  */}
@@ -157,8 +156,8 @@ export default function Home() {
               Organization
             </Typography>
             <Typography>
-              Our tech flashcards enables users to manage multiple flashcard
-              decks effortlessly.
+              Our flashcards enable users to manage multiple flashcard decks
+              effortlessly.
             </Typography>
           </Grid>
         </Grid>

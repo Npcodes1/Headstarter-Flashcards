@@ -1,5 +1,7 @@
 import { useUser } from "@clerk/nextjs"; //for authentication
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { db } from "@/firebase";
 import { useSearchParams } from "next/navigation"; //to get flashcard set ID from the url
 
 export default function Flashcard() {
@@ -15,24 +17,28 @@ export default function Flashcard() {
     async function getFlashcard() {
       if (!search || !user) return;
 
-      const colRef = collection(doc(collection(db, "users"), user.id), search);
-      const docs = await getDocs(colRef);
+      const docRef = doc(collection(db, "users"), user.id);
+      const docSnap = await getDocs(docRef);
       const flashcards = [];
+
       docs.forEach((doc) => {
         flashcards.push({ id: doc.id, ...doc.data() });
       });
-      setFlashcards(flashcards);
     }
     getFlashcard();
-  }, [search, user]);
+  }, [user]);
 
-  // //to handle flipping the flashcards => toggles flip state of flashcard when clicked
-  // const handleCardClick = (id) => {
-  //   setFlipped((prev) => ({
-  //     ...prev,
-  //     [id]: !prev[id],
-  //   }));
-  // };
+  //to handle flipping the flashcards => toggles flip state of flashcard when clicked
+  const handleCardClick = (id) => {
+    setFlipped((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  if (!isLoaded || !isSignedIn) {
+    return <></>;
+  }
   return (
     <Container maxWidth="md">
       <Grid container spacing={3} sx={{ mt: 4 }}>
