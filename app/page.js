@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import getStripe from "@/utilis/get-stripe";
 
 import {
@@ -14,6 +16,23 @@ import {
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
+  //check if a user is signed in
+  const { isSignedIn } = useAuth();
+
+  // Initialize router for navigation
+  const router = useRouter();
+
+  // Handle button click for "Get Started"
+  const handleGetStarted = () => {
+    // If user is not signed in, redirect to login/signup page
+    if (!isSignedIn) {
+      router.push("/sign-in");
+    } else {
+      // Redirect to the generate page if signed in
+      router.push("/generate");
+    }
+  };
+
   //Stripe Integration
   const handleSubmit = async (priceId) => {
     const checkoutSession = await fetch("/api/checkout_sessions", {
@@ -43,10 +62,28 @@ export default function Home() {
             Bits & Bytes
           </Typography>
           <SignedOut>
-            <Button color="inherit" href="/sign-in">
+            <Button
+              color="inherit"
+              href="/sign-in"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#000",
+                  color: "#F5C6C6",
+                },
+              }}
+            >
               Sign In
             </Button>
-            <Button color="inherit" href="/sign-up">
+            <Button
+              color="inherit"
+              href="/sign-up"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#000",
+                  color: "#F5C6C6",
+                },
+              }}
+            >
               Sign Up
             </Button>
           </SignedOut>
@@ -56,7 +93,7 @@ export default function Home() {
         </Toolbar>
       </AppBar>
       {/* adds headline, sub-headline, and call to action buttons */}
-      <Box sx={{ my: 12, textAlign: "center" }}>
+      <Box sx={{ my: 12, textAlign: "center", px: 1.5 }}>
         <Typography variant="h2" gutterBottom>
           Welcome to Bits & Bytes
         </Typography>
@@ -76,7 +113,7 @@ export default function Home() {
               color: "#F5C6C6",
             },
           }}
-          href="/generate"
+          onClick={handleGetStarted}
         >
           Get Started
         </Button>

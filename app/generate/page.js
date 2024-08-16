@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 
 import { getDoc } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 
 export default function Generate() {
   const [text, setText] = useState("");
@@ -24,9 +25,7 @@ export default function Generate() {
   const [setName, setSetName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  //functions to open/close dialog
-  const handleOpenDialog = () => setDialogOpen(true);
-  const handleCloseDialog = () => setDialogOpen(false);
+  const router = useRouter();
 
   const handleSubmit = async () => {
     //check if the input text is empty. If it is, alert that it is.
@@ -37,7 +36,7 @@ export default function Generate() {
 
     try {
       //send a POST request to our api/generate route with the input text
-      const response = await fetch("/api/generate", {
+      const response = await fetch("/generate", {
         method: "POST",
         body: text,
       });
@@ -49,6 +48,7 @@ export default function Generate() {
       //if response successful => update flashcards with the generated data.
       const data = await response.json();
       setFlashcards(data);
+      console.log(data);
 
       //if error, log error and alert user.
     } catch (error) {
@@ -64,6 +64,10 @@ export default function Generate() {
       [id]: !prev[id],
     }));
   };
+
+  //functions to open/close dialog
+  const handleOpenDialog = () => setDialogOpen(true);
+  const handleCloseDialog = () => setDialogOpen(false);
 
   //add function to save flashcards to Firebase
   const saveFlashcards = async () => {
@@ -81,29 +85,31 @@ export default function Generate() {
         const userData = userDocSnap.data().flashcards || [];
         if (userData.find((f) => f.name === name)) {
           alert("Flashcard collection with the same name already exists.");
-          return;
         } else {
-          userData.push({ name });
-          batch.set(userDocRef, { flashcards: collections }, { merge: true });
+          //   userData.push({ name });
+          //   batch.set(userDocRef, { flashcards: collections }, { merge: true });
         }
 
-        // const updatedSets = [
-        //   ...(userData.flashcardSets || []),
-        //   { name: setName },
-        // ];
-        // batch.update(userDocRef, { flashcardSets: updatedSets });
+        const updatedSets = [
+          ...(userData.flashcardSets || []),
+          { name: setName },
+        ];
+        batch.update(userDocRef, { flashcardSets: updatedSets });
       } else {
-        batch.set(userDocRef, { flashcardSets: [{ name: setName }] });
+        batch.set(userDocRef, { flashcardSets: [{ name }] });
       }
 
-      const setDocRef = collection(userDocRef, setName);
-      batch.set(setDocRef, { flashcards });
+      const setDocRef = collection(userDocRef, name);
+      flashcards.forEach((flashcard) => {
+        const cardDocRef = doc(setDocRef);
+        batch.set(cardDocRef, { flashcards });
+      });
 
       await batch.commit();
 
       alert("Flashcards saved successfully!");
       handleCloseDialog();
-      setSetName("");
+      router.push("/flashcards");
     } catch (error) {
       console.error("Error saving flashcards:", error);
       alert("An error occurred while saving flashcards. Please try again.");
