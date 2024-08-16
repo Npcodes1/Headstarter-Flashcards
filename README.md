@@ -1,7 +1,7 @@
 # This is Project 4 of the Headstarter AI Fellowship.
 
 ## Goal
-    - The goal is to create a set of flashcards using AI and Strip.
+    - The goal is to create a set of flashcards using AI and Stripe.
 
 ## Tech Used
     - Next.js
