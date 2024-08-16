@@ -26,13 +26,13 @@ export default function Flashcard() {
     getFlashcard();
   }, [search, user]);
 
-  //to handle flipping the flashcards => toggles flip state of flashcard when clicked
-  const handleCardClick = (id) => {
-    setFlipped((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
+  // //to handle flipping the flashcards => toggles flip state of flashcard when clicked
+  // const handleCardClick = (id) => {
+  //   setFlipped((prev) => ({
+  //     ...prev,
+  //     [id]: !prev[id],
+  //   }));
+  // };
   return (
     <Container maxWidth="md">
       <Grid container spacing={3} sx={{ mt: 4 }}>

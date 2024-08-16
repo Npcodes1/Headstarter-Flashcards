@@ -14,6 +14,8 @@ import {
   DialogActions,
 } from "@mui/material";
 
+import { getDoc } from "firebase/firestore";
+
 export default function Generate() {
   const [text, setText] = useState("");
   const [flashcards, setFlashcards] = useState([]);
@@ -35,7 +37,7 @@ export default function Generate() {
 
     try {
       //send a POST request to our api/generate route with the input text
-      const response = await fetch("api/generate", {
+      const response = await fetch("/api/generate", {
         method: "POST",
         body: text,
       });
@@ -55,6 +57,14 @@ export default function Generate() {
     }
   };
 
+  //to handle flipping the flashcards => toggles flip state of flashcard when clicked
+  const handleCardClick = (id) => {
+    setFlipped((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   //add function to save flashcards to Firebase
   const saveFlashcards = async () => {
     if (!setName.trim()) {
@@ -63,23 +73,30 @@ export default function Generate() {
     }
 
     try {
+      const batch = writeBatch(db);
       const userDocRef = doc(collection(db, "users"), user.id);
       const userDocSnap = await getDoc(userDocRef);
 
-      const batch = writeBatch(db);
-
       if (userDocSnap.exists()) {
-        const userData = userDocSnap.data();
-        const updatedSets = [
-          ...(userData.flashcardSets || []),
-          { name: setName },
-        ];
-        batch.update(userDocRef, { flashcardSets: updatedSets });
+        const userData = userDocSnap.data().flashcards || [];
+        if (userData.find((f) => f.name === name)) {
+          alert("Flashcard collection with the same name already exists.");
+          return;
+        } else {
+          userData.push({ name });
+          batch.set(userDocRef, { flashcards: collections }, { merge: true });
+        }
+
+        // const updatedSets = [
+        //   ...(userData.flashcardSets || []),
+        //   { name: setName },
+        // ];
+        // batch.update(userDocRef, { flashcardSets: updatedSets });
       } else {
         batch.set(userDocRef, { flashcardSets: [{ name: setName }] });
       }
 
-      const setDocRef = doc(collection(userDocRef, "flashcardSets"), setName);
+      const setDocRef = collection(userDocRef, setName);
       batch.set(setDocRef, { flashcards });
 
       await batch.commit();
@@ -114,6 +131,14 @@ export default function Generate() {
           color="primary"
           onClick={handleSubmit}
           fullWidth
+          sx={{
+            bgcolor: "#F5C6C6",
+            color: "#000",
+            "&:hover": {
+              backgroundColor: "#000",
+              color: "#F5C6C6",
+            },
+          }}
         >
           Generate Flashcards
         </Button>

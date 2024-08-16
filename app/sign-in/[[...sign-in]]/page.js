@@ -15,7 +15,7 @@ export default function SignInPage() {
   return (
     <>
       {/* Navbar */}
-      <AppBar position="static" sx={{ backgroundColor: "#3f51b5" }}>
+      <AppBar position="static" sx={{ bgcolor: "#F5C6C6", color: "#000" }}>
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Bits & Bytes

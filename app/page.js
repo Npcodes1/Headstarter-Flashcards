@@ -1,4 +1,7 @@
-import Image from "next/image";
+"use client";
+
+import getStripe from "@/utilis/get-stripe";
+
 import {
   AppBar,
   Toolbar,
@@ -7,18 +10,18 @@ import {
   Button,
   Box,
   Divider,
-  List,
-  ListItemText,
 } from "@mui/material";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   //Stripe Integration
-  const handleSubmit = async () => {
+  const handleSubmit = async (priceId) => {
     const checkoutSession = await fetch("/api/checkout_sessions", {
       method: "POST",
-      headers: { origin: "http://localhost:3000" },
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ priceId }),
     });
+
     const checkoutSessionJson = await checkoutSession.json();
 
     const stripe = await getStripe();
@@ -34,14 +37,14 @@ export default function Home() {
   return (
     //Navbar with app title and authentication buttons
     <>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ bgcolor: "#F5C6C6", color: "#000" }}>
         <Toolbar>
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Bits & Bytes
           </Typography>
           <SignedOut>
             <Button color="inherit" href="/sign-in">
-              Login
+              Sign In
             </Button>
             <Button color="inherit" href="/sign-up">
               Sign Up
@@ -52,31 +55,31 @@ export default function Home() {
           </SignedIn>
         </Toolbar>
       </AppBar>
-      {/* adds headline, subheadline, and call to action buttons */}
+      {/* adds headline, sub-headline, and call to action buttons */}
       <Box sx={{ my: 12, textAlign: "center" }}>
         <Typography variant="h2" gutterBottom>
           Welcome to Bits & Bytes
         </Typography>
         <Typography variant="h5" gutterBottom>
-          Bits of Knowledge, Bytes of Success
+          Your Ultimate Tool for Tech Flashcards: Bits of Knowledge, Bytes of
+          Success
         </Typography>
         <Button
           variant="contained"
-          color="primary"
-          sx={{ mt: 2, mr: 2 }}
+          sx={{
+            mt: 2,
+            mr: 2,
+            bgcolor: "#F5C6C6",
+            color: "#000",
+            "&:hover": {
+              backgroundColor: "#000",
+              color: "#F5C6C6",
+            },
+          }}
           href="/generate"
         >
           Get Started
         </Button>
-        {/* <Button
-          variant="outlined"
-          color="primary"
-          sx={{
-            mt: 2,
-          }}
-        >
-          Learn More
-        </Button> */}
 
         <Divider sx={{ my: 2, p: 4 }} />
       </Box>
@@ -95,7 +98,10 @@ export default function Home() {
             <Typography variant="h6" fontWeight={600}>
               Easy to Use
             </Typography>
-            <Typography>Add your text and we do the rest!</Typography>
+            <Typography>
+              Do you feel like there are so much tech to learn? Add your
+              tech-related text and we do the rest!
+            </Typography>
           </Grid>
 
           {/* Accessible */}
@@ -104,8 +110,8 @@ export default function Home() {
               Accessible
             </Typography>
             <Typography>
-              Access your flashcards from anywhere! Make learning on the go easy
-              and efficient.
+              Access your tech flashcards from anywhere! Make learning on the go
+              easy and efficient.
             </Typography>
           </Grid>
           {/* Organized  */}
@@ -114,12 +120,14 @@ export default function Home() {
               Organization
             </Typography>
             <Typography>
-              Our flashcards enables users to manage multiple flashcard decks
-              effortlessly.
+              Our tech flashcards enables users to manage multiple flashcard
+              decks effortlessly.
             </Typography>
           </Grid>
         </Grid>
       </Box>
+
+      <Divider sx={{ my: 2, p: 2 }} />
       {/* Pricing Section- shows pricing plans */}
       <Box sx={{ my: 6, textAlign: "center" }}>
         <Typography
@@ -132,7 +140,7 @@ export default function Home() {
         <Grid container spacing={4} justifyContent="center">
           {/* Pricing plans */}
           {/* Free */}
-          <Grid item xs={12} md={4}>
+          {/* <Grid item xs={12} md={4}>
             <Typography variant="h6" fontWeight={600}>
               Free
             </Typography>
@@ -141,7 +149,15 @@ export default function Home() {
             <Typography>
               No access to advanced customization or analytics
             </Typography>
-          </Grid>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, mr: 2 }}
+              onClick={() => handleSubmit("price_1PoFE8KDBpZ5objPDtYhbrQh")}
+            >
+              Buy Now
+            </Button>
+          </Grid> */}
 
           {/* Basic */}
           <Grid item xs={12} md={4}>
@@ -151,6 +167,22 @@ export default function Home() {
             <Typography>$ 5 / month</Typography>
             <Typography>500 flashcards</Typography>
             <Typography>Basic customization and analytics</Typography>
+            <Button
+              variant="contained"
+              sx={{
+                mt: 2,
+                mr: 2,
+                bgcolor: "#F5C6C6",
+                color: "#000",
+                "&:hover": {
+                  backgroundColor: "#000",
+                  color: "#F5C6C6",
+                },
+              }}
+              onClick={() => handleSubmit("price_1PoFYOKDBpZ5objPWDcmTJHg")}
+            >
+              Buy Now
+            </Button>
           </Grid>
 
           {/* Pro */}
@@ -164,6 +196,22 @@ export default function Home() {
             <Typography>
               Advanced customization and detailed analytics
             </Typography>
+            <Button
+              variant="contained"
+              sx={{
+                mt: 2,
+                mr: 2,
+                bgcolor: "#F5C6C6",
+                color: "#000",
+                "&:hover": {
+                  backgroundColor: "#000",
+                  color: "#F5C6C6",
+                },
+              }}
+              onClick={() => handleSubmit("price_1PoFYzKDBpZ5objPdYtv2F3C")}
+            >
+              Buy Now
+            </Button>
           </Grid>
         </Grid>
       </Box>
