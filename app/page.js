@@ -1,41 +1,45 @@
+
+'use client'
 import Image from "next/image";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Grid,
-  Button,
-  Box,
-  Divider,
-  List,
-  ListItemText,
-} from "@mui/material";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+// import getStripe from "@/utils/get-stripe";
+import { SignedIn,SignedOut,UserButton } from "@clerk/nextjs";
+import { AppBar, Box, Button, Container, Grid, Toolbar, Typography } from "@mui/material";
+import Head from "next/head";
+import Link from "next/link";
 
 export default function Home() {
-  //Stripe Integration
-  const handleSubmit = async () => {
-    const checkoutSession = await fetch("/api/checkout_sessions", {
-      method: "POST",
-      headers: { origin: "http://localhost:3000" },
-    });
-    const checkoutSessionJson = await checkoutSession.json();
 
-    const stripe = await getStripe();
-    const { error } = await stripe.redirectToCheckout({
-      sessionId: checkoutSessionJson.id,
-    });
+  const handleSubmit = async ()=>{
+    const checkoutSession = await fetch('/api/checkout_session',{
+      method: 'POST',
+      headers: {
+        origin: 'http://localhost:3000',
+      }
+    })
 
-    if (error) {
-      console.warn(error.message);
+    const checkoutSessionJson = await checkoutSession.json()
+
+    if (checkoutSession.statusCode === 500){
+      console.error(checkoutSession.message)
+      return
     }
-  };
+    const stripe = await getStripe()
+    const {error} = await stripe.redirectToCheckout({
+       sessionId: checkoutSessionJson.id,
+    })
 
+    if(error){
+      console.warn(error.message)
+    }
+  }
   return (
-    //Navbar with app title and authentication buttons
-    <>
+    <Container maxWidth="100vw">
+      <Head>
+        <title>QuickCardAI</title>
+        <meta name="description" content="Create flashcard from your text"></meta>
+      </Head>
       <AppBar position="static">
-        <Toolbar>
+      <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
             Bits & Bytes
           </Typography>
@@ -52,121 +56,85 @@ export default function Home() {
           </SignedIn>
         </Toolbar>
       </AppBar>
-      {/* adds headline, subheadline, and call to action buttons */}
-      <Box sx={{ my: 12, textAlign: "center" }}>
-        <Typography variant="h2" gutterBottom>
+
+      <Box sx={{textAlign:'center',my: 4}}>
+        <Typography variant="h2" gutterBottom>          
           Welcome to Bits & Bytes
         </Typography>
         <Typography variant="h5" gutterBottom>
+          {''}
           Bits of Knowledge, Bytes of Success
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ mt: 2, mr: 2 }}
-          href="/generate"
-        >
-          Get Started
-        </Button>
-        {/* <Button
-          variant="outlined"
-          color="primary"
-          sx={{
-            mt: 2,
-          }}
-        >
-          Learn More
-        </Button> */}
-
-        <Divider sx={{ my: 2, p: 4 }} />
+        <Button href="/generate" LinkComponent={Link} variant="contained" color="primary" sx={{mt:2}}>
+        Get Started
+        </Button> 
       </Box>
-      {/* Features section -highlights key features of app using grid layout */}
-      <Box sx={{ mx: 10, my: 12, textAlign: "center" }}>
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{ textDecoration: "underline", my: 5 }}
-        >
+      <Box sx={{my: 6}}>
+        <Typography variant="h4" gutterBottom>
           Features
         </Typography>
-        <Grid container spacing={4}>
-          {/* Feature items - Easy to use */}
-          <Grid item xs={12} md={4}>
-            <Typography variant="h6" fontWeight={600}>
-              Easy to Use
-            </Typography>
-            <Typography>Add your text and we do the rest!</Typography>
-          </Grid>
-
-          {/* Accessible */}
-          <Grid item xs={12} md={4}>
-            <Typography variant="h6" fontWeight={600}>
-              Accessible
-            </Typography>
+        <Grid container spacing = {4}>
+          <Grid item xs = {12} md={4}>
+            <Typography variant="h6" gutterBottom>Easy Text Input</Typography>
             <Typography>
-              Access your flashcards from anywhere! Make learning on the go easy
-              and efficient.
+              {' '}
+              Simply input your text and let our software do the rest. Creating flashcards has never been easier.
             </Typography>
           </Grid>
-          {/* Organized  */}
-          <Grid item xs={12} md={4}>
-            <Typography variant="h6" fontWeight={600}>
-              Organization
-            </Typography>
+          <Grid item xs = {12} md={4}>
+            <Typography variant="h6" gutterBottom>Smart Flashcards</Typography>
             <Typography>
-              Our flashcards enables users to manage multiple flashcard decks
-              effortlessly.
+              {' '}
+              Our AI intelligently breaks down your text into concise flashcards, perfect for studying.
+            </Typography>
+          </Grid>
+          <Grid item xs = {12} md={4}>
+            <Typography variant="h6" gutterBottom>Accesible Anywhere</Typography>
+            <Typography>
+              {' '}
+              Access your flashcards from any device, at any time, Study on the go with ease.
             </Typography>
           </Grid>
         </Grid>
       </Box>
-      {/* Pricing Section- shows pricing plans */}
-      <Box sx={{ my: 6, textAlign: "center" }}>
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{ textDecoration: "underline" }}
-        >
-          Pricing
-        </Typography>
-        <Grid container spacing={4} justifyContent="center">
-          {/* Pricing plans */}
-          {/* Free */}
-          <Grid item xs={12} md={4}>
-            <Typography variant="h6" fontWeight={600}>
-              Free
-            </Typography>
-            <Typography>$ 0</Typography>
-            <Typography>100 flashcards</Typography>
+
+      <Box sx={{my: 6, textAlign:'center'}}>
+        <Typography variant="h4" gutterBottom>Pricing</Typography>
+        <Grid container spacing = {4}>
+          <Grid item xs = {12} md={6}>
+            <Box sx={{
+              p:3,
+              border: '1px solid',
+              borderColor: 'grey.300',
+              borderRadius: 2,
+            }}>
+            <Typography variant="h5" gutterBottom>Basic</Typography>
+            <Typography variant="h6" gutterBottom>$5 / month</Typography>
             <Typography>
-              No access to advanced customization or analytics
+              {' '}
+              Access to basic flashcard features and limited storage.
             </Typography>
+            <Button variant="contained" color="primary" sx={{mt:2}}>Choose Basic</Button>
+            </Box>
           </Grid>
-
-          {/* Basic */}
-          <Grid item xs={12} md={4}>
-            <Typography variant="h6" fontWeight={600}>
-              Basic
-            </Typography>
-            <Typography>$ 5 / month</Typography>
-            <Typography>500 flashcards</Typography>
-            <Typography>Basic customization and analytics</Typography>
-          </Grid>
-
-          {/* Pro */}
-
-          <Grid item xs={12} md={4}>
-            <Typography variant="h6" fontWeight={600}>
-              Pro
-            </Typography>
-            <Typography>$ 10 / month</Typography>
-            <Typography>Unlimited Flashcards</Typography>
+          <Grid item xs = {12} md={6}>
+          <Box sx={{
+              p:3,
+              border: '1px solid',
+              borderColor: 'grey.300',
+              borderRadius: 2,
+            }}>
+            <Typography variant="h5" gutterBottom>Pro</Typography>
+            <Typography variant="h6" gutterBottom>$10 / month</Typography>
             <Typography>
-              Advanced customization and detailed analytics
+              {' '}
+              Unlimited flashcards and storage, with priority support.
             </Typography>
-          </Grid>
+            <Button variant="contained" color="primary" sx={{mt:2}} onClick={handleSubmit}>Choose Pro</Button>
+            </Box>
+            </Grid>
         </Grid>
       </Box>
-    </>
+    </Container>
   );
 }
